@@ -26,6 +26,16 @@
             :color="$route.path === '/comparativa' ? 'teal-4' : 'white'"
             :text-color="$route.path === '/comparativa' ? 'teal-4' : 'white'"
           />
+          <q-btn
+            flat
+            :to="{ path: '/dashboard' }"
+            icon="dashboard"
+            label="Dashboard"
+            no-caps
+            class="text-weight-medium"
+            :color="$route.path === '/dashboard' ? 'teal-4' : 'white'"
+            :text-color="$route.path === '/dashboard' ? 'teal-4' : 'white'"
+          />
         </div>
       </q-toolbar>
     </q-header>
