@@ -302,7 +302,9 @@
                   :disable="detailLoading"
                   @click="viewUserDetail(props.row)"
                 >
-                  <q-tooltip>{{ detailLoading ? 'Cargando...' : 'Ver detalle completo' }}</q-tooltip>
+                  <q-tooltip>{{
+                    detailLoading ? 'Cargando...' : 'Ver detalle completo'
+                  }}</q-tooltip>
                 </q-btn>
               </q-td>
             </template>
