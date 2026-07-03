@@ -28,6 +28,16 @@
           />
           <q-btn
             flat
+            :to="{ path: '/compras' }"
+            icon="shopping_cart"
+            label="Compras"
+            no-caps
+            class="text-weight-medium"
+            :color="$route.path === '/compras' ? 'teal-4' : 'white'"
+            :text-color="$route.path === '/compras' ? 'teal-4' : 'white'"
+          />
+          <q-btn
+            flat
             :to="{ path: '/dashboard' }"
             icon="dashboard"
             label="Dashboard"
