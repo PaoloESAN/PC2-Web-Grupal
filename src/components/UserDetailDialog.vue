@@ -345,6 +345,7 @@ watch(
       fetchUserDetail(props.userId)
     }
   },
+  { immediate: true },
 )
 
 function formatDate(dateString) {
