@@ -70,10 +70,10 @@
         <q-card-section class="bg-white q-pa-lg row items-center justify-between q-col-gutter-md">
           <div class="col-12 col-sm-6">
             <div class="text-h6 text-weight-bold text-slate-800">Búsqueda de Colaboradores</div>
-            <div class="text-caption text-grey-6">Filtre por nombre, cargo, empresa o ubicación en tiempo real</div>
+            <div class="text-caption text-grey-6">Busque colaboradores por nombre o apellido en tiempo real</div>
           </div>
           <div class="col-12 col-sm-6 col-md-5">
-            <q-input v-model="filter" outlined dense placeholder="Buscar por nombre, correo, cargo..."
+            <q-input v-model="filter" outlined dense placeholder="Buscar por nombre o apellido..."
               class="search-input" color="primary" bg-color="white">
               <template v-slot:append>
                 <q-icon v-if="filter" name="clear" class="cursor-pointer" @click="filter = ''" />
@@ -86,8 +86,7 @@
         <q-card-section class="q-pa-none">
           <q-table :rows="rows" :columns="columns" v-model:pagination="pagination" row-key="id" :loading="loading"
             @request="onRequest" binary-state-sort flat square class="employees-table"
-            :rows-per-page-options="[5, 10, 20, 50]" no-data-label="No se encontraron colaboradores registrados"
-            no-results-label="No se encontraron coincidencias para su búsqueda"
+            :rows-per-page-options="[5, 10, 20, 50]"
             rows-per-page-label="Registros por página:">
             <template v-slot:body-cell-image="props">
               <q-td :props="props" class="text-center">
@@ -160,6 +159,18 @@
                   <q-tooltip>Ver detalle completo</q-tooltip>
                 </q-btn>
               </q-td>
+            </template>
+
+            <template v-slot:no-data>
+              <div class="q-pa-xl text-center">
+                <q-icon :name="filter ? 'search_off' : 'group_off'" size="64px" :color="filter ? 'orange-5' : 'grey-4'" />
+                <div class="text-h6 text-weight-bold text-grey-7 q-mt-md">
+                  {{ filter ? 'Sin resultados' : 'Directorio vacío' }}
+                </div>
+                <div class="text-body2 text-grey-5 q-mt-sm">
+                  {{ filter ? 'No se encontraron colaboradores que coincidan con "' + filter + '".' : 'No hay colaboradores registrados en el directorio.' }}
+                </div>
+              </div>
             </template>
 
             <template v-slot:loading>
