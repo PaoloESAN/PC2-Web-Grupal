@@ -11,10 +11,6 @@
             Filtre colaboradores por género, edad, empresa, ciudad y país de forma combinada y en tiempo real.
           </p>
         </div>
-        <div class="col-12 col-md-4 text-right gt-sm q-pr-md">
-          <q-btn outline color="white" icon="group_add" label="Registrar Empleado" no-caps
-            class="text-weight-bold q-px-md q-py-sm btn-action-hover" @click="notifyMock" />
-        </div>
       </div>
 
       <div class="row q-col-gutter-lg q-mb-lg">
@@ -392,15 +388,6 @@ watch(filteredUsers, () => {
 function viewUserDetail(row) {
   selectedUser.value = row
   showDetail.value = true
-}
-
-function notifyMock() {
-  $q.notify({
-    color: 'info',
-    position: 'top-right',
-    message: 'Esta funcionalidad es una demostración. Registro de empleados fuera de alcance.',
-    icon: 'info',
-  })
 }
 
 onMounted(() => {
