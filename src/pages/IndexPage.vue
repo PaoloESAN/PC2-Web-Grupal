@@ -282,7 +282,7 @@ const columns = [
 
 async function onRequest(props) {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
-  const filterValue = props.filter
+  const filterValue = filter.value
 
   loading.value = true
 
