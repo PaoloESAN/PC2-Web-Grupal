@@ -6,435 +6,352 @@
   >
     <q-card
       class="user-detail-card"
-      style="width: 700px; max-width: 90vw; border-radius: 16px; overflow: hidden"
+      style="width: 780px; max-width: 92vw; border-radius: 16px; overflow: hidden"
     >
-      <div class="profile-header-banner relative-position q-px-md q-py-lg text-white text-center">
-        <q-btn
-          icon="close"
-          flat
-          round
-          dense
-          color="white"
-          class="absolute-top-right q-mt-sm q-mr-sm"
-          v-close-popup
-        />
+      <q-inner-loading :showing="loading" color="primary" class="bg-white">
+        <q-spinner-gears size="50px" color="primary" />
+        <div class="text-primary text-weight-bold q-mt-md">
+          Cargando información del colaborador...
+        </div>
+      </q-inner-loading>
 
-        <div class="avatar-container q-mb-sm">
-          <q-avatar size="110px" class="profile-avatar shadow-5">
-            <img :src="user.image" alt="Avatar de empleado" />
-          </q-avatar>
+      <template v-if="!loading && user">
+        <div class="profile-header-banner relative-position q-px-md q-py-lg text-white text-center">
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            color="white"
+            class="absolute-top-right q-mt-sm q-mr-sm"
+            v-close-popup
+          />
+
+          <div class="avatar-container q-mb-sm">
+            <q-avatar size="120px" class="profile-avatar shadow-5">
+              <img :src="user.image" alt="Avatar" />
+            </q-avatar>
+          </div>
+
+          <div class="text-h4 text-weight-bold">{{ user.firstName }} {{ user.lastName }}</div>
+          <div class="text-subtitle1 opacity-80 q-mb-sm">
+            {{ user.company?.title || 'Colaborador' }}
+          </div>
+          <div class="row justify-center q-gutter-sm">
+            <q-badge color="teal-6" text-color="white" class="q-py-xs q-px-sm text-weight-medium">
+              <q-icon name="work" class="q-mr-xs" />
+              {{ user.company?.department || 'General' }}
+            </q-badge>
+            <q-badge
+              :color="user.role === 'admin' ? 'red-5' : 'blue-5'"
+              text-color="white"
+              class="q-py-xs q-px-sm text-weight-medium uppercase"
+            >
+              {{ user.role || 'Usuario' }}
+            </q-badge>
+          </div>
         </div>
 
-        <div class="text-h5 text-weight-bold">{{ user.firstName }} {{ user.lastName }}</div>
-        <div class="text-subtitle1 opacity-80">{{ user.company?.title || 'Colaborador' }}</div>
-        <div class="q-mt-sm row justify-center q-gutter-xs">
-          <q-badge color="teal-6" text-color="white" class="q-py-xs q-px-sm text-weight-medium">
-            <q-icon name="work" class="q-mr-xs" />
-            {{ user.company?.department || 'General' }}
-          </q-badge>
-          <q-badge
-            :color="user.role === 'admin' ? 'red-5' : 'blue-5'"
-            text-color="white"
-            class="q-py-xs q-px-sm text-weight-medium uppercase"
-          >
-            {{ user.role || 'Usuario' }}
-          </q-badge>
-        </div>
-      </div>
-
-      <q-tabs
-        v-model="activeTab"
-        dense
-        class="text-grey-7 bg-grey-1"
-        active-color="primary"
-        indicator-color="primary"
-        align="justify"
-        narrow-indicator
-      >
-        <q-tab name="personal" icon="person" label="Personal" />
-        <q-tab name="contact" icon="contact_phone" label="Contacto" />
-        <q-tab name="work" icon="business" label="Laboral" />
-        <q-tab name="financial" icon="account_balance_wallet" label="Financiero" />
-      </q-tabs>
-
-      <q-separator />
-
-      <q-tab-panels v-model="activeTab" animated class="q-py-sm">
-        <q-tab-panel name="personal">
+        <q-scroll-area style="height: 480px" class="q-pa-md bg-grey-1">
           <div class="row q-col-gutter-md">
             <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="cake" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Edad y Cumpleaños</q-item-label>
-                    <q-item-label class="text-weight-medium"
-                      >{{ user.age }} años ({{ formatDate(user.birthDate) }})</q-item-label
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-primary q-mb-sm">
+                    <q-icon name="person" class="q-mr-sm" /> Datos Personales
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <div class="info-row">
+                    <span class="info-label">Nombre completo:</span
+                    ><span class="info-value">{{ user.firstName }} {{ user.lastName }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Edad:</span
+                    ><span class="info-value">{{ user.age }} años</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Cumpleaños:</span
+                    ><span class="info-value">{{ formatDate(user.birthDate) }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Género:</span
+                    ><span class="info-value">{{ translateGender(user.gender) }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Email:</span
+                    ><span class="info-value">{{ user.email }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Teléfono:</span
+                    ><span class="info-value">{{ user.phone }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Usuario:</span
+                    ><span class="info-value">@{{ user.username }}</span>
+                  </div>
+                </q-card-section>
+              </q-card>
+
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-teal-7 q-mb-sm">
+                    <q-icon name="fitness_center" class="q-mr-sm" /> Información Física
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <div class="info-row">
+                    <span class="info-label">Estatura:</span
+                    ><span class="info-value">{{ user.height }} cm</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Peso:</span
+                    ><span class="info-value">{{ user.weight }} kg</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Grupo sanguíneo:</span
+                    ><span class="info-value">{{ user.bloodGroup || 'N/E' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Color de ojos:</span
+                    ><span class="info-value text-capitalize">{{ user.eyeColor || 'N/E' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Cabello:</span
+                    ><span class="info-value text-capitalize"
+                      >{{ user.hair?.color || 'N/E' }} ({{ user.hair?.type || 'N/E' }})</span
                     >
-                  </q-item-section>
-                </q-item>
+                  </div>
+                </q-card-section>
+              </q-card>
 
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon
-                      :name="user.gender === 'female' ? 'female' : 'male'"
-                      :color="user.gender === 'female' ? 'pink' : 'blue'"
-                    />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Género</q-item-label>
-                    <q-item-label class="text-weight-medium">{{
-                      translateGender(user.gender)
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-indigo-7 q-mb-sm">
+                    <q-icon name="school" class="q-mr-sm" /> Universidad
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <div class="info-row" v-if="user.university">
+                    <span class="info-label">Institución:</span>
+                    <span class="info-value">{{ user.university }}</span>
+                  </div>
+                  <div class="text-grey-5 text-center q-py-md" v-else>
+                    <q-icon name="school" size="32px" class="block q-mb-sm" />
+                    <span>No registra información universitaria</span>
+                  </div>
+                </q-card-section>
+              </q-card>
 
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="bloodtype" color="red" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Grupo Sanguíneo</q-item-label>
-                    <q-item-label class="text-weight-medium">{{
-                      user.bloodGroup || 'No especificado'
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-orange-8 q-mb-sm">
+                    <q-icon name="currency_bitcoin" class="q-mr-sm" /> Criptomonedas
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <template v-if="user.crypto">
+                    <div class="info-row">
+                      <span class="info-label">Moneda:</span
+                      ><span class="info-value text-uppercase">{{ user.crypto.coin }}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Wallet:</span
+                      ><span class="info-value font-mono text-caption">{{
+                        user.crypto.wallet
+                      }}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Red:</span
+                      ><span class="info-value">{{ user.crypto.network }}</span>
+                    </div>
+                  </template>
+                  <div class="text-grey-5 text-center q-py-md" v-else>
+                    <q-icon name="currency_bitcoin" size="32px" class="block q-mb-sm" />
+                    <span>No registra información de criptomonedas</span>
+                  </div>
+                </q-card-section>
+              </q-card>
             </div>
 
             <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="straighten" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Estatura y Peso</q-item-label>
-                    <q-item-label class="text-weight-medium"
-                      >{{ user.height }} cm / {{ user.weight }} kg</q-item-label
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-deep-purple-7 q-mb-sm">
+                    <q-icon name="business" class="q-mr-sm" /> Información Laboral
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <div class="info-row">
+                    <span class="info-label">Empresa:</span
+                    ><span class="info-value text-weight-bold">{{
+                      user.company?.name || 'N/A'
+                    }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Cargo:</span
+                    ><span class="info-value">{{ user.company?.title || 'N/A' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Departamento:</span
+                    ><span class="info-value">{{ user.company?.department || 'N/A' }}</span>
+                  </div>
+                  <div class="info-row" v-if="user.company?.address">
+                    <span class="info-label">Dirección laboral:</span>
+                    <span class="info-value"
+                      >{{ user.company.address.address }}, {{ user.company.address.city }},
+                      {{ user.company.address.state }}</span
                     >
-                  </q-item-section>
-                </q-item>
+                  </div>
+                </q-card-section>
+              </q-card>
 
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="visibility" color="teal" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Color de Ojos</q-item-label>
-                    <q-item-label class="text-weight-medium text-capitalize">{{
-                      user.eyeColor || 'No especificado'
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="face" color="orange-8" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Cabello</q-item-label>
-                    <q-item-label class="text-weight-medium text-capitalize">
-                      {{ user.hair?.color }} ({{ user.hair?.type }})
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-          </div>
-        </q-tab-panel>
-
-        <q-tab-panel name="contact">
-          <div class="row q-col-gutter-md">
-            <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="email" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Correo Electrónico</q-item-label>
-                    <q-item-label class="text-weight-medium text-break">
-                      <a :href="'mailto:' + user.email" class="text-primary text-decoration-none">{{
-                        user.email
-                      }}</a>
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="phone" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Teléfono Movil</q-item-label>
-                    <q-item-label class="text-weight-medium">{{ user.phone }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="school" color="indigo" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Universidad / Educación</q-item-label>
-                    <q-item-label class="text-weight-medium text-subtitle2">{{
-                      user.university
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-
-            <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="home" color="teal" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Dirección Residencial</q-item-label>
-                    <q-item-label class="text-weight-medium">
-                      {{ user.address?.address }}
-                    </q-item-label>
-                    <q-item-label class="text-weight-medium">
-                      {{ user.address?.city }}, {{ user.address?.state }} ({{
-                        user.address?.postalCode
-                      }})
-                    </q-item-label>
-                    <q-item-label class="text-weight-bold text-teal-9">
-                      {{ user.address?.country }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item v-if="user.address?.coordinates">
-                  <q-item-section avatar>
-                    <q-icon name="place" color="red-6" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Coordenadas GPS</q-item-label>
-                    <q-item-label class="text-weight-medium text-caption">
-                      Lat: {{ user.address.coordinates.lat }}, Lng:
-                      {{ user.address.coordinates.lng }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-          </div>
-        </q-tab-panel>
-
-        <q-tab-panel name="work">
-          <div class="row q-col-gutter-md">
-            <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="business" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Empresa</q-item-label>
-                    <q-item-label class="text-weight-bold text-primary">{{
-                      user.company?.name
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="badge" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Cargo / Rol Profesional</q-item-label>
-                    <q-item-label class="text-weight-medium">{{
-                      user.company?.title
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="lan" color="primary" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Departamento</q-item-label>
-                    <q-item-label class="text-weight-medium">{{
-                      user.company?.department
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-
-            <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="pin_drop" color="indigo" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Dirección de Trabajo</q-item-label>
-                    <q-item-label class="text-weight-medium">
-                      {{ user.company?.address?.address }}
-                    </q-item-label>
-                    <q-item-label class="text-weight-medium">
-                      {{ user.company?.address?.city }}, {{ user.company?.address?.state }}
-                    </q-item-label>
-                    <q-item-label class="text-weight-bold text-indigo-9">
-                      {{ user.company?.address?.country || 'United States' }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-          </div>
-        </q-tab-panel>
-
-        <q-tab-panel name="financial">
-          <div class="row q-col-gutter-md">
-            <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item-label
-                  header
-                  class="text-weight-bold text-subtitle2 text-grey-9 q-px-none q-pb-xs"
-                >
-                  <q-icon name="key" class="q-mr-xs" color="amber-8" /> Datos del Sistema
-                </q-item-label>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="account_box" color="grey-7" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Usuario</q-item-label>
-                    <q-item-label class="text-weight-medium">@{{ user.username }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="dns" color="grey-7" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Dirección IP</q-item-label>
-                    <q-item-label class="text-weight-medium font-mono text-caption">{{
-                      user.ip
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="settings_ethernet" color="grey-7" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Dirección MAC</q-item-label>
-                    <q-item-label class="text-weight-medium font-mono text-caption">{{
-                      user.macAddress
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-
-            <div class="col-12 col-sm-6">
-              <q-list dense padding>
-                <q-item-label
-                  header
-                  class="text-weight-bold text-subtitle2 text-grey-9 q-px-none q-pb-xs"
-                >
-                  <q-icon name="credit_card" class="q-mr-xs" color="blue" /> Información de Nómina
-                </q-item-label>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="payment" color="blue" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Tarjeta Registrada</q-item-label>
-                    <q-item-label class="text-weight-medium">
-                      {{ user.bank?.cardType }} (Vence: {{ user.bank?.cardExpire }})
-                    </q-item-label>
-                    <q-item-label class="text-weight-medium text-caption font-mono">
-                      {{ maskCardNumber(user.bank?.cardNumber) }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon name="currency_exchange" color="teal" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Moneda de Pago</q-item-label>
-                    <q-item-label class="text-weight-medium text-uppercase">{{
-                      user.bank?.currency
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item v-if="user.crypto">
-                  <q-item-section avatar>
-                    <q-icon name="currency_bitcoin" color="orange-9" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>Crypto Wallet ({{ user.crypto.coin }})</q-item-label>
-                    <q-item-label
-                      class="text-weight-medium text-caption font-mono ellipsis cursor-pointer"
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-teal-7 q-mb-sm">
+                    <q-icon name="home" class="q-mr-sm" /> Dirección
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <div class="info-row">
+                    <span class="info-label">Dirección:</span
+                    ><span class="info-value">{{ user.address?.address || 'N/A' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Ciudad:</span
+                    ><span class="info-value">{{ user.address?.city || 'N/A' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Estado:</span
+                    ><span class="info-value">{{ user.address?.state || 'N/A' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Código postal:</span
+                    ><span class="info-value">{{ user.address?.postalCode || 'N/A' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">País:</span
+                    ><span class="info-value text-weight-bold">{{
+                      user.address?.country || 'N/A'
+                    }}</span>
+                  </div>
+                  <div class="info-row" v-if="user.address?.coordinates">
+                    <span class="info-label">Coordenadas:</span>
+                    <span class="info-value text-caption"
+                      >Lat: {{ user.address.coordinates.lat }}, Lng:
+                      {{ user.address.coordinates.lng }}</span
                     >
-                      {{ user.crypto.wallet }}
-                      <q-tooltip
-                        >{{ user.crypto.wallet }} (Red: {{ user.crypto.network }})</q-tooltip
+                  </div>
+                </q-card-section>
+              </q-card>
+
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-blue-7 q-mb-sm">
+                    <q-icon name="account_balance" class="q-mr-sm" /> Banco
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <template v-if="user.bank">
+                    <div class="info-row">
+                      <span class="info-label">Tarjeta:</span
+                      ><span class="info-value"
+                        >{{ user.bank.cardType }} (vence: {{ user.bank.cardExpire }})</span
                       >
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Número:</span
+                      ><span class="info-value font-mono">{{
+                        maskCardNumber(user.bank.cardNumber)
+                      }}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Moneda:</span
+                      ><span class="info-value text-uppercase">{{ user.bank.currency }}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">IBAN:</span
+                      ><span class="info-value font-mono text-caption">{{ user.bank.iban }}</span>
+                    </div>
+                  </template>
+                  <div class="text-grey-5 text-center q-py-md" v-else>
+                    <q-icon name="credit_card" size="32px" class="block q-mb-sm" />
+                    <span>No registra información bancaria</span>
+                  </div>
+                </q-card-section>
+              </q-card>
+
+              <q-card flat bordered class="section-card q-mb-md">
+                <q-card-section class="q-pa-md">
+                  <div class="section-title text-grey-7 q-mb-sm">
+                    <q-icon name="dns" class="q-mr-sm" /> Datos del Sistema
+                  </div>
+                  <q-separator class="q-mb-sm" />
+                  <div class="info-row">
+                    <span class="info-label">IP:</span
+                    ><span class="info-value font-mono text-caption">{{ user.ip }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">MAC:</span
+                    ><span class="info-value font-mono text-caption">{{ user.macAddress }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Usuario desde:</span
+                    ><span class="info-value">{{
+                      formatDate(user.registrationDate || user.createdAt)
+                    }}</span>
+                  </div>
+                </q-card-section>
+              </q-card>
             </div>
           </div>
-        </q-tab-panel>
-      </q-tab-panels>
+        </q-scroll-area>
 
-      <q-separator />
+        <q-separator />
 
-      <q-card-actions align="right" class="bg-grey-1 q-pa-md">
-        <q-btn flat label="Cerrar" color="primary" v-close-popup class="text-weight-bold" />
-      </q-card-actions>
+        <q-card-actions align="right" class="bg-white q-pa-md">
+          <q-btn flat label="Cerrar" color="primary" v-close-popup class="text-weight-bold" />
+        </q-card-actions>
+      </template>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true,
-  },
-  user: {
-    type: Object,
-    required: true,
-  },
+const props = defineProps({
+  modelValue: { type: Boolean, required: true },
+  userId: { type: Number, required: true },
 })
 
 defineEmits(['update:modelValue'])
 
-const activeTab = ref('personal')
+const user = ref(null)
+const loading = ref(false)
+
+async function fetchUserDetail(id) {
+  loading.value = true
+  user.value = null
+  try {
+    const response = await fetch(`https://dummyjson.com/users/${id}`)
+    if (!response.ok) throw new Error('Error al obtener información del colaborador')
+    user.value = await response.json()
+  } catch (error) {
+    console.error('Error fetching user detail:', error)
+    user.value = null
+  } finally {
+    loading.value = false
+  }
+}
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val && props.userId) {
+      fetchUserDetail(props.userId)
+    }
+  },
+)
 
 function formatDate(dateString) {
   if (!dateString) return ''
   try {
     const date = new Date(dateString)
-    return date.toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    })
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
   } catch {
     return dateString
   }
@@ -462,7 +379,6 @@ function maskCardNumber(cardNumber) {
 
 .avatar-container {
   display: inline-block;
-  position: relative;
 }
 
 .profile-avatar {
@@ -474,8 +390,47 @@ function maskCardNumber(cardNumber) {
   }
 }
 
-.text-break {
-  word-break: break-all;
+.section-card {
+  border-radius: 10px;
+  background: white;
+  transition: box-shadow 0.2s ease;
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.section-title {
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.info-value {
+  font-size: 0.85rem;
+  color: #1e293b;
+  text-align: right;
+  font-weight: 500;
+  word-break: break-word;
+  max-width: 60%;
 }
 
 .font-mono {
@@ -484,6 +439,10 @@ function maskCardNumber(cardNumber) {
 
 .opacity-80 {
   opacity: 0.8;
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
 
 .user-detail-card {

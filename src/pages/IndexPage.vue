@@ -1,14 +1,17 @@
 <template>
   <q-page class="q-pa-lg bg-slate-50">
     <div class="max-width-container q-mx-auto">
-      <div class="row items-center justify-between q-mb-xl hero-section q-pa-xl text-white rounded-2xl shadow-6">
+      <div
+        class="row items-center justify-between q-mb-xl hero-section q-pa-xl text-white rounded-2xl shadow-6"
+      >
         <div class="col-12 col-md-8">
           <h1 class="text-h3 text-weight-bold q-my-none text-shadow flex items-center gap-sm">
             <q-icon name="contacts" class="q-mr-sm" size="50px" />
             Directorio Corporativo
           </h1>
           <p class="text-subtitle1 q-mt-md q-mb-none opacity-90 font-light">
-            Filtre colaboradores por género, edad, empresa, ciudad y país de forma combinada y en tiempo real.
+            Filtre colaboradores por género, edad, empresa, ciudad y país de forma combinada y en
+            tiempo real.
           </p>
         </div>
       </div>
@@ -18,8 +21,11 @@
           <q-card class="stat-card shadow-2 rounded-xl">
             <q-card-section class="row items-center justify-between q-py-md">
               <div>
-                <div class="text-grey-6 text-caption text-uppercase text-weight-bold letter-spacing-1">Colaboradores
-                  Totales</div>
+                <div
+                  class="text-grey-6 text-caption text-uppercase text-weight-bold letter-spacing-1"
+                >
+                  Colaboradores Totales
+                </div>
                 <div class="text-h4 text-weight-bold text-slate-800 q-mt-xs">{{ totalUsers }}</div>
               </div>
               <div class="stat-icon-wrapper bg-blue-50 text-blue-6 rounded-lg q-pa-sm">
@@ -32,9 +38,14 @@
           <q-card class="stat-card shadow-2 rounded-xl">
             <q-card-section class="row items-center justify-between q-py-md">
               <div>
-                <div class="text-grey-6 text-caption text-uppercase text-weight-bold letter-spacing-1">Promedio de Edad
+                <div
+                  class="text-grey-6 text-caption text-uppercase text-weight-bold letter-spacing-1"
+                >
+                  Promedio de Edad
                 </div>
-                <div class="text-h4 text-weight-bold text-slate-800 q-mt-xs">{{ averageAge }} años</div>
+                <div class="text-h4 text-weight-bold text-slate-800 q-mt-xs">
+                  {{ averageAge }} años
+                </div>
               </div>
               <div class="stat-icon-wrapper bg-teal-50 text-teal-6 rounded-lg q-pa-sm">
                 <q-icon name="analytics" size="30px" />
@@ -46,11 +57,14 @@
           <q-card class="stat-card shadow-2 rounded-xl">
             <q-card-section class="row items-center justify-between q-py-md">
               <div>
-                <div class="text-grey-6 text-caption text-uppercase text-weight-bold letter-spacing-1">Géneros
-                  Registrados</div>
+                <div
+                  class="text-grey-6 text-caption text-uppercase text-weight-bold letter-spacing-1"
+                >
+                  Géneros Registrados
+                </div>
                 <div class="text-h4 text-weight-bold text-slate-800 q-mt-xs">
-                  <span class="text-pink-6">F: {{ femaleCount }}</span> | <span class="text-blue-6">M: {{ maleCount
-                    }}</span>
+                  <span class="text-pink-6">F: {{ femaleCount }}</span> |
+                  <span class="text-blue-6">M: {{ maleCount }}</span>
                 </div>
               </div>
               <div class="stat-icon-wrapper bg-purple-50 text-purple-6 rounded-lg q-pa-sm">
@@ -66,28 +80,84 @@
           <div class="text-h6 text-weight-bold text-slate-800 q-mb-md">Filtros de Búsqueda</div>
           <div class="row q-col-gutter-md">
             <div class="col-12 col-sm-6 col-md-2">
-              <q-select v-model="filters.gender" :options="genderOptions" label="Género" outlined dense
-                clearable emit-value map-options class="filter-input" color="primary" bg-color="white" />
+              <q-select
+                v-model="filters.gender"
+                :options="genderOptions"
+                label="Género"
+                outlined
+                dense
+                clearable
+                emit-value
+                map-options
+                class="filter-input"
+                color="primary"
+                bg-color="white"
+              />
             </div>
             <div class="col-6 col-sm-3 col-md-2">
-              <q-input v-model.number="filters.ageMin" type="number" label="Edad mín." outlined dense
-                class="filter-input" color="primary" bg-color="white" min="0" />
+              <q-input
+                v-model.number="filters.ageMin"
+                type="number"
+                label="Edad mín."
+                outlined
+                dense
+                class="filter-input"
+                color="primary"
+                bg-color="white"
+                min="0"
+              />
             </div>
             <div class="col-6 col-sm-3 col-md-2">
-              <q-input v-model.number="filters.ageMax" type="number" label="Edad máx." outlined dense
-                class="filter-input" color="primary" bg-color="white" min="0" />
+              <q-input
+                v-model.number="filters.ageMax"
+                type="number"
+                label="Edad máx."
+                outlined
+                dense
+                class="filter-input"
+                color="primary"
+                bg-color="white"
+                min="0"
+              />
             </div>
             <div class="col-12 col-sm-6 col-md-2">
-              <q-input v-model="filters.company" label="Empresa" outlined dense placeholder="Ej: Apple"
-                class="filter-input" color="primary" bg-color="white" clearable />
+              <q-input
+                v-model="filters.company"
+                label="Empresa"
+                outlined
+                dense
+                placeholder="Ej: Apple"
+                class="filter-input"
+                color="primary"
+                bg-color="white"
+                clearable
+              />
             </div>
             <div class="col-12 col-sm-6 col-md-2">
-              <q-input v-model="filters.city" label="Ciudad" outlined dense placeholder="Ej: Nueva York"
-                class="filter-input" color="primary" bg-color="white" clearable />
+              <q-input
+                v-model="filters.city"
+                label="Ciudad"
+                outlined
+                dense
+                placeholder="Ej: Nueva York"
+                class="filter-input"
+                color="primary"
+                bg-color="white"
+                clearable
+              />
             </div>
             <div class="col-12 col-sm-6 col-md-2">
-              <q-input v-model="filters.country" label="País" outlined dense placeholder="Ej: Estados Unidos"
-                class="filter-input" color="primary" bg-color="white" clearable />
+              <q-input
+                v-model="filters.country"
+                label="País"
+                outlined
+                dense
+                placeholder="Ej: Estados Unidos"
+                class="filter-input"
+                color="primary"
+                bg-color="white"
+                clearable
+              />
             </div>
           </div>
         </q-card-section>
@@ -102,13 +172,27 @@
                 {{ filteredUsers.length }} colaboradores
               </q-badge>
             </div>
-            <div class="text-caption text-grey-6">Datos filtrados localmente sin recargar la API</div>
+            <div class="text-caption text-grey-6">
+              Datos filtrados localmente sin recargar la API
+            </div>
           </div>
           <div class="col-12 col-sm-6 col-md-5">
-            <q-input v-model="filters.search" outlined dense placeholder="Buscar por nombre, correo, cargo..."
-              class="search-input" color="primary" bg-color="white">
+            <q-input
+              v-model="filters.search"
+              outlined
+              dense
+              placeholder="Buscar por nombre, correo, cargo..."
+              class="search-input"
+              color="primary"
+              bg-color="white"
+            >
               <template v-slot:append>
-                <q-icon v-if="filters.search" name="clear" class="cursor-pointer" @click="filters.search = ''" />
+                <q-icon
+                  v-if="filters.search"
+                  name="clear"
+                  class="cursor-pointer"
+                  @click="filters.search = ''"
+                />
                 <q-icon name="search" color="primary" />
               </template>
             </q-input>
@@ -116,11 +200,21 @@
         </q-card-section>
 
         <q-card-section class="q-pa-none">
-          <q-table :rows="paginatedRows" :columns="columns" v-model:pagination="pagination" row-key="id"
-            :loading="loading" binary-state-sort flat square class="employees-table"
-            :rows-per-page-options="[5, 10, 20, 50]" no-data-label="No se encontraron colaboradores con esos filtros"
+          <q-table
+            :rows="paginatedRows"
+            :columns="columns"
+            v-model:pagination="pagination"
+            row-key="id"
+            :loading="loading"
+            binary-state-sort
+            flat
+            square
+            class="employees-table"
+            :rows-per-page-options="[5, 10, 20, 50]"
+            no-data-label="No se encontraron colaboradores con esos filtros"
             rows-per-page-label="Registros por página:"
-            :hide-pagination="filteredUsers.length <= pagination.rowsPerPage">
+            :hide-pagination="filteredUsers.length <= pagination.rowsPerPage"
+          >
             <template v-slot:body-cell-image="props">
               <q-td :props="props" class="text-center">
                 <q-avatar size="46px" class="avatar-table shadow-1">
@@ -138,8 +232,11 @@
 
             <template v-slot:body-cell-age="props">
               <q-td :props="props" class="text-center">
-                <q-badge color="teal-1" text-color="teal-8"
-                  class="q-py-xs q-px-sm text-weight-medium">
+                <q-badge
+                  color="teal-1"
+                  text-color="teal-8"
+                  class="q-py-xs q-px-sm text-weight-medium"
+                >
                   {{ props.value }} años
                 </q-badge>
               </q-td>
@@ -147,8 +244,13 @@
 
             <template v-slot:body-cell-gender="props">
               <q-td :props="props" class="text-center">
-                <q-chip size="sm" :color="props.value === 'female' ? 'pink-5' : 'blue-5'" text-color="white"
-                  class="text-weight-bold" :icon="props.value === 'female' ? 'female' : 'male'">
+                <q-chip
+                  size="sm"
+                  :color="props.value === 'female' ? 'pink-5' : 'blue-5'"
+                  text-color="white"
+                  class="text-weight-bold"
+                  :icon="props.value === 'female' ? 'female' : 'male'"
+                >
                   {{ props.value === 'female' ? 'F' : 'M' }}
                 </q-chip>
               </q-td>
@@ -156,7 +258,10 @@
 
             <template v-slot:body-cell-email="props">
               <q-td :props="props">
-                <a :href="'mailto:' + props.value" class="email-link text-primary flex items-center no-decoration">
+                <a
+                  :href="'mailto:' + props.value"
+                  class="email-link text-primary flex items-center no-decoration"
+                >
                   <q-icon name="mail" size="14px" class="q-mr-xs" />
                   {{ props.value }}
                   <q-tooltip>Enviar correo electrónico</q-tooltip>
@@ -187,8 +292,15 @@
 
             <template v-slot:body-cell-action="props">
               <q-td :props="props" class="text-center">
-                <q-btn flat round color="primary" icon="visibility" size="sm" class="action-btn-hover"
-                  @click="viewUserDetail(props.row)">
+                <q-btn
+                  flat
+                  round
+                  color="primary"
+                  icon="visibility"
+                  size="sm"
+                  class="action-btn-hover"
+                  @click="viewUserDetail(props.row)"
+                >
                   <q-tooltip>Ver detalle completo</q-tooltip>
                 </q-btn>
               </q-td>
@@ -207,7 +319,9 @@
             <template v-slot:loading>
               <q-inner-loading showing color="primary">
                 <q-spinner-gears size="60px" color="primary" />
-                <div class="text-primary text-subtitle1 text-weight-bold q-mt-md">Cargando directorio...</div>
+                <div class="text-primary text-subtitle1 text-weight-bold q-mt-md">
+                  Cargando directorio...
+                </div>
               </q-inner-loading>
             </template>
           </q-table>
@@ -215,7 +329,11 @@
       </q-card>
     </div>
 
-    <user-detail-dialog v-if="showDetail && selectedUser" v-model="showDetail" :user="selectedUser" />
+    <user-detail-dialog
+      v-if="showDetail && selectedUser"
+      v-model="showDetail"
+      :user-id="selectedUser.id"
+    />
   </q-page>
 </template>
 
@@ -231,6 +349,7 @@ const loading = ref(false)
 
 const showDetail = ref(false)
 const selectedUser = ref(null)
+const detailLoading = ref(false)
 
 const genderOptions = [
   { label: 'Masculino', value: 'male' },
@@ -295,17 +414,29 @@ const filteredUsers = computed(() => {
   return allUsers.value.filter((user) => {
     if (filters.value.gender && user.gender !== filters.value.gender) return false
 
-    if (filters.value.ageMin !== null && filters.value.ageMin !== '' && user.age < Number(filters.value.ageMin)) return false
-    if (filters.value.ageMax !== null && filters.value.ageMax !== '' && user.age > Number(filters.value.ageMax)) return false
+    if (
+      filters.value.ageMin !== null &&
+      filters.value.ageMin !== '' &&
+      user.age < Number(filters.value.ageMin)
+    )
+      return false
+    if (
+      filters.value.ageMax !== null &&
+      filters.value.ageMax !== '' &&
+      user.age > Number(filters.value.ageMax)
+    )
+      return false
 
     const company = (user.company?.name || '').toLowerCase()
-    if (filters.value.company && !company.includes(filters.value.company.toLowerCase())) return false
+    if (filters.value.company && !company.includes(filters.value.company.toLowerCase()))
+      return false
 
     const city = (user.address?.city || '').toLowerCase()
     if (filters.value.city && !city.includes(filters.value.city.toLowerCase())) return false
 
     const country = (user.address?.country || '').toLowerCase()
-    if (filters.value.country && !country.includes(filters.value.country.toLowerCase())) return false
+    if (filters.value.country && !country.includes(filters.value.country.toLowerCase()))
+      return false
 
     if (filters.value.search) {
       const q = filters.value.search.toLowerCase()
@@ -380,14 +511,31 @@ async function fetchAllUsers() {
 
 watch(filteredUsers, () => {
   pagination.value.rowsNumber = filteredUsers.value.length
-  if (pagination.value.page > Math.ceil(filteredUsers.value.length / pagination.value.rowsPerPage)) {
+  if (
+    pagination.value.page > Math.ceil(filteredUsers.value.length / pagination.value.rowsPerPage)
+  ) {
     pagination.value.page = 1
   }
 })
 
-function viewUserDetail(row) {
-  selectedUser.value = row
-  showDetail.value = true
+async function viewUserDetail(row) {
+  detailLoading.value = true
+  try {
+    const response = await fetch(`https://dummyjson.com/users/${row.id}`)
+    if (!response.ok) throw new Error('Error al obtener detalle del colaborador')
+    selectedUser.value = await response.json()
+    showDetail.value = true
+  } catch (error) {
+    console.error('Error fetching user detail:', error)
+    $q.notify({
+      color: 'negative',
+      position: 'bottom-right',
+      message: 'No se pudo cargar la información del colaborador.',
+      icon: 'report_problem',
+    })
+  } finally {
+    detailLoading.value = false
+  }
 }
 
 onMounted(() => {
@@ -405,7 +553,9 @@ onMounted(() => {
   border-radius: 16px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 25px -5px rgba(15, 118, 110, 0.3), 0 8px 10px -6px rgba(15, 118, 110, 0.3);
+  box-shadow:
+    0 10px 25px -5px rgba(15, 118, 110, 0.3),
+    0 8px 10px -6px rgba(15, 118, 110, 0.3);
 
   &::after {
     content: '';
@@ -426,7 +576,9 @@ onMounted(() => {
 
 .stat-card {
   border: 1px solid rgba(226, 232, 240, 0.8);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-2px);
