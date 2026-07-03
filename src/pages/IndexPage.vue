@@ -162,7 +162,7 @@
             </template>
 
             <template v-slot:no-data>
-              <div class="q-pa-xl text-center">
+              <div class="q-pa-xl no-data-container text-center">
                 <q-icon :name="filter ? 'search_off' : 'group_off'" size="64px" :color="filter ? 'orange-5' : 'grey-4'" />
                 <div class="text-h6 text-weight-bold text-grey-7 q-mt-md">
                   {{ filter ? 'Sin resultados' : 'Directorio vacío' }}
@@ -440,6 +440,7 @@ onMounted(() => {
 
 .employees-table {
   background-color: transparent;
+  width: 100%;
 
   :deep(thead tr th) {
     font-weight: 700;
@@ -463,6 +464,10 @@ onMounted(() => {
   :deep(tbody td) {
     padding: 14px 16px;
     border-bottom: 1px solid #f1f5f9;
+  }
+
+  :deep(tbody td.text-center) {
+    text-align: center !important;
   }
 }
 
@@ -515,4 +520,13 @@ onMounted(() => {
 .border-grey-300 {
   border: 1px solid #e2e8f0;
 }
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 </style>
