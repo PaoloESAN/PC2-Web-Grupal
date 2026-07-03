@@ -8,8 +8,7 @@
             Directorio Corporativo
           </h1>
           <p class="text-subtitle1 q-mt-md q-mb-none opacity-90 font-light">
-            Busque, explore y consulte la información detallada de todos los colaboradores de la organización de forma
-            rápida y eficiente.
+            Filtre colaboradores por género, edad, empresa, ciudad y país de forma combinada y en tiempo real.
           </p>
         </div>
         <div class="col-12 col-md-4 text-right gt-sm q-pr-md">
@@ -66,17 +65,54 @@
         </div>
       </div>
 
+      <q-card class="filters-card shadow-2 rounded-xl q-mb-lg">
+        <q-card-section class="q-pa-lg">
+          <div class="text-h6 text-weight-bold text-slate-800 q-mb-md">Filtros de Búsqueda</div>
+          <div class="row q-col-gutter-md">
+            <div class="col-12 col-sm-6 col-md-2">
+              <q-select v-model="filters.gender" :options="genderOptions" label="Género" outlined dense
+                clearable emit-value map-options class="filter-input" color="primary" bg-color="white" />
+            </div>
+            <div class="col-6 col-sm-3 col-md-2">
+              <q-input v-model.number="filters.ageMin" type="number" label="Edad mín." outlined dense
+                class="filter-input" color="primary" bg-color="white" min="0" />
+            </div>
+            <div class="col-6 col-sm-3 col-md-2">
+              <q-input v-model.number="filters.ageMax" type="number" label="Edad máx." outlined dense
+                class="filter-input" color="primary" bg-color="white" min="0" />
+            </div>
+            <div class="col-12 col-sm-6 col-md-2">
+              <q-input v-model="filters.company" label="Empresa" outlined dense placeholder="Ej: Apple"
+                class="filter-input" color="primary" bg-color="white" clearable />
+            </div>
+            <div class="col-12 col-sm-6 col-md-2">
+              <q-input v-model="filters.city" label="Ciudad" outlined dense placeholder="Ej: Nueva York"
+                class="filter-input" color="primary" bg-color="white" clearable />
+            </div>
+            <div class="col-12 col-sm-6 col-md-2">
+              <q-input v-model="filters.country" label="País" outlined dense placeholder="Ej: Estados Unidos"
+                class="filter-input" color="primary" bg-color="white" clearable />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+
       <q-card class="directory-card shadow-4 rounded-2xl overflow-hidden border-grey-100">
         <q-card-section class="bg-white q-pa-lg row items-center justify-between q-col-gutter-md">
           <div class="col-12 col-sm-6">
-            <div class="text-h6 text-weight-bold text-slate-800">Búsqueda de Colaboradores</div>
-            <div class="text-caption text-grey-6">Busque colaboradores por nombre o apellido en tiempo real</div>
+            <div class="text-h6 text-weight-bold text-slate-800">
+              Resultados
+              <q-badge color="primary" class="q-ml-sm q-px-sm q-py-xs">
+                {{ filteredUsers.length }} colaboradores
+              </q-badge>
+            </div>
+            <div class="text-caption text-grey-6">Datos filtrados localmente sin recargar la API</div>
           </div>
           <div class="col-12 col-sm-6 col-md-5">
-            <q-input v-model="filter" outlined dense placeholder="Buscar por nombre o apellido..."
+            <q-input v-model="filters.search" outlined dense placeholder="Buscar por nombre, correo, cargo..."
               class="search-input" color="primary" bg-color="white">
               <template v-slot:append>
-                <q-icon v-if="filter" name="clear" class="cursor-pointer" @click="filter = ''" />
+                <q-icon v-if="filters.search" name="clear" class="cursor-pointer" @click="filters.search = ''" />
                 <q-icon name="search" color="primary" />
               </template>
             </q-input>
@@ -84,10 +120,11 @@
         </q-card-section>
 
         <q-card-section class="q-pa-none">
-          <q-table :rows="rows" :columns="columns" v-model:pagination="pagination" row-key="id" :loading="loading"
-            @request="onRequest" binary-state-sort flat square class="employees-table"
-            :rows-per-page-options="[5, 10, 20, 50]"
-            rows-per-page-label="Registros por página:">
+          <q-table :rows="paginatedRows" :columns="columns" v-model:pagination="pagination" row-key="id"
+            :loading="loading" binary-state-sort flat square class="employees-table"
+            :rows-per-page-options="[5, 10, 20, 50]" no-data-label="No se encontraron colaboradores con esos filtros"
+            rows-per-page-label="Registros por página:"
+            :hide-pagination="filteredUsers.length <= pagination.rowsPerPage">
             <template v-slot:body-cell-image="props">
               <q-td :props="props" class="text-center">
                 <q-avatar size="46px" class="avatar-table shadow-1">
@@ -163,12 +200,10 @@
 
             <template v-slot:no-data>
               <div class="q-pa-xl no-data-container text-center">
-                <q-icon :name="filter ? 'search_off' : 'group_off'" size="64px" :color="filter ? 'orange-5' : 'grey-4'" />
-                <div class="text-h6 text-weight-bold text-grey-7 q-mt-md">
-                  {{ filter ? 'Sin resultados' : 'Directorio vacío' }}
-                </div>
+                <q-icon name="search_off" size="64px" color="orange-5" />
+                <div class="text-h6 text-weight-bold text-grey-7 q-mt-md">Sin resultados</div>
                 <div class="text-body2 text-grey-5 q-mt-sm">
-                  {{ filter ? 'No se encontraron colaboradores que coincidan con "' + filter + '".' : 'No hay colaboradores registrados en el directorio.' }}
+                  No se encontraron colaboradores que coincidan con los filtros aplicados.
                 </div>
               </div>
             </template>
@@ -189,172 +224,169 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import UserDetailDialog from '@/components/UserDetailDialog.vue'
 
 const $q = useQuasar()
 
-const rows = ref([])
+const allUsers = ref([])
 const loading = ref(false)
-const filter = ref('')
-const totalUsers = ref(0)
-const averageAge = ref(0)
-const femaleCount = ref(0)
-const maleCount = ref(0)
 
 const showDetail = ref(false)
 const selectedUser = ref(null)
+
+const genderOptions = [
+  { label: 'Masculino', value: 'male' },
+  { label: 'Femenino', value: 'female' },
+]
+
+const filters = ref({
+  gender: null,
+  ageMin: null,
+  ageMax: null,
+  company: '',
+  city: '',
+  country: '',
+  search: '',
+})
 
 const pagination = ref({
   sortBy: 'firstName',
   descending: false,
   page: 1,
   rowsPerPage: 10,
-  rowsNumber: 0
+  rowsNumber: 0,
 })
 
 const columns = [
-  {
-    name: 'image',
-    label: 'Foto',
-    field: 'image',
-    align: 'center',
-    style: 'width: 60px'
-  },
+  { name: 'image', label: 'Foto', field: 'image', align: 'center', style: 'width: 60px' },
   {
     name: 'fullName',
     label: 'Colaborador',
-    field: row => `${row.firstName} ${row.lastName}`,
+    field: (row) => `${row.firstName} ${row.lastName}`,
     align: 'left',
-    sortable: true
+    sortable: true,
   },
-  {
-    name: 'age',
-    label: 'Edad',
-    field: 'age',
-    align: 'center',
-    sortable: true
-  },
-  {
-    name: 'gender',
-    label: 'Gen',
-    field: 'gender',
-    align: 'center',
-    sortable: true
-  },
-  {
-    name: 'email',
-    label: 'Correo Electrónico',
-    field: 'email',
-    align: 'left',
-    sortable: true
-  },
+  { name: 'age', label: 'Edad', field: 'age', align: 'center', sortable: true },
+  { name: 'gender', label: 'Gen', field: 'gender', align: 'center', sortable: true },
+  { name: 'email', label: 'Correo Electrónico', field: 'email', align: 'left', sortable: true },
   {
     name: 'companyName',
     label: 'Empresa',
-    field: row => row.company?.name || 'N/A',
+    field: (row) => row.company?.name || 'N/A',
     align: 'left',
-    sortable: true
+    sortable: true,
   },
   {
     name: 'companyTitle',
     label: 'Cargo',
-    field: row => row.company?.title || 'N/A',
+    field: (row) => row.company?.title || 'N/A',
     align: 'left',
-    sortable: true
+    sortable: true,
   },
   {
     name: 'location',
     label: 'Ubicación',
-    field: row => row.address?.city || '',
+    field: (row) => row.address?.city || '',
     align: 'left',
-    sortable: true
+    sortable: true,
   },
-  {
-    name: 'action',
-    label: 'Acciones',
-    field: 'action',
-    align: 'center',
-    style: 'width: 80px'
-  }
+  { name: 'action', label: 'Acciones', field: 'action', align: 'center', style: 'width: 80px' },
 ]
 
-async function onRequest(props) {
-  const { page, rowsPerPage, sortBy, descending } = props.pagination
-  const filterValue = filter.value
+const filteredUsers = computed(() => {
+  return allUsers.value.filter((user) => {
+    if (filters.value.gender && user.gender !== filters.value.gender) return false
 
+    if (filters.value.ageMin !== null && filters.value.ageMin !== '' && user.age < Number(filters.value.ageMin)) return false
+    if (filters.value.ageMax !== null && filters.value.ageMax !== '' && user.age > Number(filters.value.ageMax)) return false
+
+    const company = (user.company?.name || '').toLowerCase()
+    if (filters.value.company && !company.includes(filters.value.company.toLowerCase())) return false
+
+    const city = (user.address?.city || '').toLowerCase()
+    if (filters.value.city && !city.includes(filters.value.city.toLowerCase())) return false
+
+    const country = (user.address?.country || '').toLowerCase()
+    if (filters.value.country && !country.includes(filters.value.country.toLowerCase())) return false
+
+    if (filters.value.search) {
+      const q = filters.value.search.toLowerCase()
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase()
+      const email = (user.email || '').toLowerCase()
+      const title = (user.company?.title || '').toLowerCase()
+      if (
+        !fullName.includes(q) &&
+        !email.includes(q) &&
+        !title.includes(q) &&
+        !(user.username || '').toLowerCase().includes(q)
+      ) {
+        return false
+      }
+    }
+
+    return true
+  })
+})
+
+const paginatedRows = computed(() => {
+  const { sortBy, descending, page, rowsPerPage } = pagination.value
+  let sorted = [...filteredUsers.value]
+
+  if (sortBy) {
+    const col = columns.find((c) => c.name === sortBy)
+    if (col) {
+      sorted.sort((a, b) => {
+        let aVal = col.field(a)
+        let bVal = col.field(b)
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase()
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase()
+        if (aVal < bVal) return descending ? 1 : -1
+        if (aVal > bVal) return descending ? -1 : 1
+        return 0
+      })
+    }
+  }
+
+  const start = (page - 1) * rowsPerPage
+  return sorted.slice(start, start + rowsPerPage)
+})
+
+const totalUsers = computed(() => filteredUsers.value.length)
+const averageAge = computed(() => {
+  if (filteredUsers.value.length === 0) return 0
+  const totalAge = filteredUsers.value.reduce((sum, u) => sum + u.age, 0)
+  return Math.round(totalAge / filteredUsers.value.length)
+})
+const femaleCount = computed(() => filteredUsers.value.filter((u) => u.gender === 'female').length)
+const maleCount = computed(() => filteredUsers.value.filter((u) => u.gender === 'male').length)
+
+async function fetchAllUsers() {
   loading.value = true
-
-  const limit = rowsPerPage
-  const skip = (page - 1) * rowsPerPage
-
   try {
-    let url = ''
-    if (filterValue) {
-      url = `https://dummyjson.com/users/search?q=${encodeURIComponent(filterValue)}&limit=${limit}&skip=${skip}`
-    } else {
-      url = `https://dummyjson.com/users?limit=${limit}&skip=${skip}`
-    }
-
-    if (sortBy) {
-      url += `&sortBy=${sortBy}&order=${descending ? 'desc' : 'asc'}`
-    }
-
-    const response = await fetch(url)
-    if (!response.ok) throw new Error('Error al consultar el servidor corporativo')
-
+    const response = await fetch('https://dummyjson.com/users?limit=250')
+    if (!response.ok) throw new Error('Error al consultar la API')
     const data = await response.json()
-
-    rows.value = data.users
-
-    pagination.value.rowsNumber = data.total
-    pagination.value.page = page
-    pagination.value.rowsPerPage = rowsPerPage
-    pagination.value.sortBy = sortBy
-    pagination.value.descending = descending
-
+    allUsers.value = data.users
   } catch (error) {
     console.error('Error fetching users:', error)
     $q.notify({
       color: 'negative',
       position: 'bottom-right',
-      message: 'No se pudo cargar la información del directorio corporativo.',
-      icon: 'report_problem'
+      message: 'No se pudo cargar la información de colaboradores.',
+      icon: 'report_problem',
     })
   } finally {
     loading.value = false
   }
 }
 
-async function fetchDirectoryStats() {
-  try {
-    const response = await fetch('https://dummyjson.com/users?limit=250')
-    if (response.ok) {
-      const data = await response.json()
-      totalUsers.value = data.total
-
-      const totalAge = data.users.reduce((sum, u) => sum + u.age, 0)
-      averageAge.value = Math.round(totalAge / data.users.length)
-
-      femaleCount.value = data.users.filter(u => u.gender === 'female').length
-      maleCount.value = data.users.filter(u => u.gender === 'male').length
-    }
-  } catch (error) {
-    console.error('Error fetching statistics:', error)
-  }
-}
-
-let searchTimeout = null
-watch(filter, (newValue) => {
-  if (searchTimeout) clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
+watch(filteredUsers, () => {
+  pagination.value.rowsNumber = filteredUsers.value.length
+  if (pagination.value.page > Math.ceil(filteredUsers.value.length / pagination.value.rowsPerPage)) {
     pagination.value.page = 1
-    onRequest({
-      pagination: pagination.value,
-      filter: newValue
-    })
-  }, 500)
+  }
 })
 
 function viewUserDetail(row) {
@@ -367,16 +399,12 @@ function notifyMock() {
     color: 'info',
     position: 'top-right',
     message: 'Esta funcionalidad es una demostración. Registro de empleados fuera de alcance.',
-    icon: 'info'
+    icon: 'info',
   })
 }
 
 onMounted(() => {
-  onRequest({
-    pagination: pagination.value,
-    filter: filter.value
-  })
-  fetchDirectoryStats()
+  fetchAllUsers()
 })
 </script>
 
@@ -423,6 +451,19 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.filters-card {
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background-color: white;
+}
+
+.filter-input {
+  max-width: 100%;
+
+  :deep(.q-field__control) {
+    border-radius: 10px;
+  }
 }
 
 .directory-card {
@@ -528,5 +569,4 @@ onMounted(() => {
   justify-content: center;
   width: 100%;
 }
-
 </style>
