@@ -161,7 +161,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import UserDetailDialog from '@/components/UserDetailDialog.vue'
 
@@ -286,8 +286,6 @@ const paginatedRows = computed(() => {
     }
   }
 
-  pagination.value.rowsNumber = sorted.length
-
   const start = (page - 1) * rowsPerPage
   return sorted.slice(start, start + rowsPerPage)
 })
@@ -311,6 +309,13 @@ async function fetchAllUsers() {
     loading.value = false
   }
 }
+
+watch(filteredUsers, () => {
+  pagination.value.rowsNumber = filteredUsers.value.length
+  if (pagination.value.page > Math.ceil(filteredUsers.value.length / pagination.value.rowsPerPage)) {
+    pagination.value.page = 1
+  }
+})
 
 function viewUserDetail(row) {
   selectedUser.value = row
