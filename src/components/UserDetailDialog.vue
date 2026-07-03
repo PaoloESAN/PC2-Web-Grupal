@@ -4,10 +4,7 @@
     @update:model-value="(val) => $emit('update:model-value', val)"
     backdrop-filter="blur(4px)"
   >
-    <q-card
-      class="user-detail-card"
-      style="width: 780px; max-width: 92vw; border-radius: 16px; overflow: hidden"
-    >
+    <q-card class="user-detail-card" style="width: 780px; max-width: 92vw; border-radius: 16px">
       <q-inner-loading :showing="loading" color="primary" class="bg-white">
         <q-spinner-gears size="50px" color="primary" />
         <div class="text-primary text-weight-bold q-mt-md">
@@ -52,7 +49,7 @@
           </div>
         </div>
 
-        <q-scroll-area style="height: 480px" class="q-pa-md bg-grey-1">
+        <div class="dialog-body-scroll q-pa-md bg-grey-1">
           <div class="row q-col-gutter-md">
             <div class="col-12 col-sm-6">
               <q-card flat bordered class="section-card q-mb-md">
@@ -298,7 +295,7 @@
               </q-card>
             </div>
           </div>
-        </q-scroll-area>
+        </div>
 
         <q-separator />
 
@@ -448,5 +445,10 @@ function maskCardNumber(cardNumber) {
 
 .user-detail-card {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dialog-body-scroll {
+  max-height: 65vh;
+  overflow-y: auto;
 }
 </style>
