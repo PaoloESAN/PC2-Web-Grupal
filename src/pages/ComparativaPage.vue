@@ -98,6 +98,14 @@
                 </q-item>
               </q-list>
 
+              <div
+                v-if="searched1 && results1.length === 0 && !user1 && !searching1"
+                class="q-mt-sm no-results q-pa-md text-center rounded-lg"
+              >
+                <q-icon name="search_off" size="28px" class="text-grey-4 q-mb-xs block" />
+                <div class="text-caption text-grey-5">No se encontraron resultados</div>
+              </div>
+
               <div v-if="user1Loading" class="q-mt-md text-center">
                 <q-spinner-dots color="teal-7" size="30px" />
                 <div class="text-caption text-grey-6 q-mt-xs">Cargando datos...</div>
@@ -216,6 +224,14 @@
                   </q-item-section>
                 </q-item>
               </q-list>
+
+              <div
+                v-if="searched2 && results2.length === 0 && !user2 && !searching2"
+                class="q-mt-sm no-results q-pa-md text-center rounded-lg"
+              >
+                <q-icon name="search_off" size="28px" class="text-grey-4 q-mb-xs block" />
+                <div class="text-caption text-grey-5">No se encontraron resultados</div>
+              </div>
 
               <div v-if="user2Loading" class="q-mt-md text-center">
                 <q-spinner-dots color="indigo-7" size="30px" />
@@ -359,6 +375,8 @@ const results1 = ref([])
 const results2 = ref([])
 const searching1 = ref(false)
 const searching2 = ref(false)
+const searched1 = ref(false)
+const searched2 = ref(false)
 const user1 = ref(null)
 const user2 = ref(null)
 const user1Loading = ref(false)
@@ -373,6 +391,7 @@ function slotState(slot) {
         search: search1,
         results: results1,
         searching: searching1,
+        searched: searched1,
         user: user1,
         userLoading: user1Loading,
         searchTimeout: 'searchTimeout1',
@@ -381,6 +400,7 @@ function slotState(slot) {
         search: search2,
         results: results2,
         searching: searching2,
+        searched: searched2,
         user: user2,
         userLoading: user2Loading,
         searchTimeout: 'searchTimeout2',
@@ -392,8 +412,11 @@ function onSearch(val, slot) {
 
   if (!val || val.trim().length < 2) {
     s.results.value = []
+    s.searched.value = false
     return
   }
+
+  s.searched.value = false
 
   if (slot === 1 && searchTimeout1) clearTimeout(searchTimeout1)
   if (slot === 2 && searchTimeout2) clearTimeout(searchTimeout2)
@@ -407,6 +430,7 @@ function onSearch(val, slot) {
       if (response.ok) {
         const data = await response.json()
         s.results.value = data.users
+        s.searched.value = true
       }
     } catch (error) {
       console.error('Error searching users:', error)
@@ -646,6 +670,11 @@ const comparisonRows = computed(() => {
   &:hover {
     background-color: #f1f5f9;
   }
+}
+
+.no-results {
+  border: 1px dashed #e2e8f0;
+  background-color: #fafafa;
 }
 
 .selected-user-card {
