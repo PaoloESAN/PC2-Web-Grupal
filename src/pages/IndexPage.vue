@@ -142,8 +142,8 @@
 
             <template v-slot:body-cell-age="props">
               <q-td :props="props" class="text-center">
-                <q-badge color="grey-2" text-color="slate-800"
-                  class="q-py-xs q-px-sm text-weight-medium border-grey-300">
+                <q-badge color="teal-1" text-color="teal-8"
+                  class="q-py-xs q-px-sm text-weight-medium">
                   {{ props.value }} años
                 </q-badge>
               </q-td>
