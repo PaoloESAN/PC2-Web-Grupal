@@ -17,10 +17,10 @@
         <div class="col-12">
           <q-card class="selector-card shadow-3 rounded-xl">
             <q-card-section class="bg-teal-700 text-white q-pa-md rounded-t-xl">
-              <div class="text-h6 text-weight-bold flex items-center">
-                <q-icon name="person" class="q-mr-sm" />
-                Colaborador
-                <q-chip v-if="selectedUser" size="sm" color="white" text-color="teal-700" class="q-ml-sm text-weight-bold">
+              <div class="text-h6 text-weight-bold row items-center q-col-gutter-sm no-wrap">
+                <q-icon name="person" />
+                <div class="text-black">Colaborador</div>
+                <q-chip v-if="selectedUser" color="white" text-color="black" class="text-weight-bold">
                   #{{ selectedUser.id }}
                 </q-chip>
               </div>
@@ -31,12 +31,13 @@
                 v-model="search"
                 outlined
                 dense
-                placeholder="Buscar por nombre, cargo o empresa..."
+                placeholder="Introduzca el nombre del colaborador"
                 class="search-input"
                 color="teal-7"
                 bg-color="white"
                 :loading="searching"
                 debounce="400"
+                :disable="!!selectedUser"
                 @update:model-value="onSearch"
               >
                 <template v-slot:append>
