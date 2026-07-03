@@ -295,13 +295,14 @@
                 <q-btn
                   flat
                   round
-                  color="primary"
-                  icon="visibility"
+                  :color="detailLoading ? 'grey-5' : 'primary'"
+                  :icon="detailLoading ? 'more_horiz' : 'visibility'"
                   size="sm"
                   class="action-btn-hover"
+                  :disable="detailLoading"
                   @click="viewUserDetail(props.row)"
                 >
-                  <q-tooltip>Ver detalle completo</q-tooltip>
+                  <q-tooltip>{{ detailLoading ? 'Cargando...' : 'Ver detalle completo' }}</q-tooltip>
                 </q-btn>
               </q-td>
             </template>
